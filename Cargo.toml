@@ -1,0 +1,18 @@
+[package]
+name = "check_mailcow"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+[dependencies]
+clap = { version = "3.2.22", features = ["derive"] }
+native-tls = { version = "0.2.10", features = ["vendored"] }
+reqwest = "0.11.12"
+serde = { version = "1.0.145", features = ["derive"] }
+serde_json = "1.0.85"
+tokio = { version = "1.21.2", features = ["full"] }
