@@ -7,7 +7,7 @@ use reqwest::header::{HeaderMap, HeaderValue};
     author = "Clete Blackwell II",
     version = "1.0.0",
     about = "Run various checks on Mailcow",
-    long_about = "Run various checks on self-hosted Mailcow-Dockerized installations (https://github.com/mailcow/mailcow-dockerized)"
+    long_about = "Run various checks on self-hosted Mailcow-Dockerized installations (https://github.com/mailcow/mailcow-dockerized)\n\nNOTE: You MUST set an environment variable 'MAILCOW_API_KEY' that contains the secret used to invoke the Mailcow API."
 )]
 struct Args {
     #[clap(
@@ -26,7 +26,7 @@ struct Args {
         short = 't',
         long,
         value_parser,
-        help = "Mailbox quota threshold for erroring",
+        help = "Mailbox quota threshold % for erroring",
         default_value_t = 70
     )]
     quota_threshold: u16,
