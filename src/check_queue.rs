@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use chrono::DateTime;
 use reqwest::Client;
 use serde::Deserialize;
 
@@ -41,7 +42,7 @@ struct QueueItem {
 
 impl Display for QueueItem {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let receive_time = chrono::NaiveDateTime::from_timestamp_opt(self.arrival_time, 0);
+        let receive_time = DateTime::from_timestamp(self.arrival_time, 0);
         let receive_time = match receive_time {
             Some(time) => time.format("%m/%d/%Y %l:%M:%S%p").to_string(),
             None => self.arrival_time.to_string(),
@@ -61,9 +62,8 @@ impl Display for QueueItem {
         for recipient in &self.recipients {
             let recipient_lines = recipient.split("  ");
             for line in recipient_lines {
-                line.split_inclusive("said: ").for_each(|final_split_line| {
-                    write!(f, "├────{}\n", final_split_line).unwrap()
-                });
+                line.split_inclusive("said: ")
+                    .for_each(|final_split_line| write!(f, "├────{}\n", final_split_line).unwrap());
             }
         }
 
@@ -97,24 +97,26 @@ mod tests {
 
     #[test]
     fn check_queue_items_returns_expected_output_when_queue_items_is_not_empty() {
-        let queue_items: Vec<super::QueueItem> = vec![super::QueueItem {
-            queue_name: "queue name1".to_string(),
-            queue_id: "queue ID1".to_string(),
-            arrival_time: 1,
-            message_size: 2,
-            forced_expire: false,
-            sender: "me".to_string(),
-            recipients: vec!["test".to_string(), "test2".to_string()],
-        },
-        super::QueueItem {
-            queue_name: "queue name2".to_string(),
-            queue_id: "queue ID2".to_string(),
-            arrival_time: 1234235236,
-            message_size: 5,
-            forced_expire: true,
-            sender: "someone".to_string(),
-            recipients: vec!["test3".to_string(), "test4".to_string()],
-        }];
+        let queue_items: Vec<super::QueueItem> = vec![
+            super::QueueItem {
+                queue_name: "queue name1".to_string(),
+                queue_id: "queue ID1".to_string(),
+                arrival_time: 1,
+                message_size: 2,
+                forced_expire: false,
+                sender: "me".to_string(),
+                recipients: vec!["test".to_string(), "test2".to_string()],
+            },
+            super::QueueItem {
+                queue_name: "queue name2".to_string(),
+                queue_id: "queue ID2".to_string(),
+                arrival_time: 1234235236,
+                message_size: 5,
+                forced_expire: true,
+                sender: "someone".to_string(),
+                recipients: vec!["test3".to_string(), "test4".to_string()],
+            },
+        ];
         let result = super::check_queue_items(queue_items);
         insta::assert_snapshot!(result.unwrap_err().to_string());
     }
