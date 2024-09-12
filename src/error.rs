@@ -40,3 +40,9 @@ impl From<Vec<Error>> for Error {
         Self { message }
     }
 }
+
+impl From<serde_json::Error> for Error {
+    fn from(e: serde_json::Error) -> Self {
+        Self::from(e.to_string())
+    }
+}

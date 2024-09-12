@@ -15,10 +15,7 @@ pub async fn check_quota(threshold: u16, base_url: &String, client: &Client) -> 
     let mut error_message = String::new();
     for mailbox in mailboxes {
         if mailbox.percent_in_use > threshold {
-            let message = format!(
-                "Mailbox {} is {}% used, which is above the {}% threshold.",
-                mailbox.username, mailbox.percent_in_use, threshold
-            );
+            let message = format!("{}, which is above the {}% threshold", mailbox, threshold);
             error_message.push_str(message.as_str());
         }
     }
@@ -33,4 +30,14 @@ pub async fn check_quota(threshold: u16, base_url: &String, client: &Client) -> 
 struct Mailbox {
     pub username: String,
     pub percent_in_use: u16,
+}
+
+impl std::fmt::Display for Mailbox {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "Mailbox {} is {}% utilized",
+            self.username, self.percent_in_use
+        )
+    }
 }

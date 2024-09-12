@@ -1,0 +1,27 @@
+---
+source: src/check_queue.rs
+expression: result.unwrap_err().to_string()
+---
+Outbound message queue is not empty:
+
+ID: queue ID1
+├─Sender: me
+├─Arrival time: 01/01/1970 12:00:01AM
+├─Message size: 2
+├─Queue type: queue name1
+├─Forced expire? false
+├─Message:
+├────test
+├────test2
+
+ID: queue ID2
+├─Sender: someone
+├─Arrival time: 02/10/2009  3:07:16AM
+├─Message size: 5
+├─Queue type: queue name2
+├─Forced expire? true
+├─Message:
+├────test3
+├────test4
+
+

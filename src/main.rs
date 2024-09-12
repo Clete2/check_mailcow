@@ -1,4 +1,6 @@
-use check_mailcow::{check_queue::check_queue, check_quota::check_quota, error::Error};
+use std::process::ExitCode;
+
+use check_mailcow::{check_queue::check_queue, check_quota::check_quota};
 use clap::Parser;
 use reqwest::header::{HeaderMap, HeaderValue};
 
@@ -48,7 +50,7 @@ struct Args {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Error> {
+async fn main() -> ExitCode {
     let args = Args::parse();
 
     if !args.all && !args.queue && !args.quotas {
@@ -82,7 +84,13 @@ async fn main() -> Result<(), Error> {
     }
 
     match errors.is_empty() {
-        true => Ok(()),
-        false => Err(Error::from(errors)),
+        true => ExitCode::SUCCESS,
+        false => {
+            for error in errors {
+                eprintln!("Error:\n{}\n", error);
+            }
+
+            ExitCode::FAILURE
+        }
     }
 }
