@@ -1,6 +1,6 @@
 [package]
 name = "check_mailcow"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -11,12 +11,12 @@ codegen-units = 1
 
 [dependencies]
 chrono = "0.4"
-clap = { version = "4.4", features = ["derive"] }
+clap = { version = "4.5", features = ["derive"] }
 native-tls = { version = "0.2", features = ["vendored"] }
-reqwest = "0.11"
+reqwest = "0.12"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = { version = "1.35", features = ["full"] }
+tokio = { version = "1.40", features = ["full"] }
 
 [dev-dependencies]
-insta = "1.34"
+insta = "1.40"

@@ -1,6 +1,9 @@
 use std::process::ExitCode;
 
-use check_mailcow::{check_queue::check_queue, check_quota::check_quota};
+use check_mailcow::{
+    check_postfix_rejections::check_postfix_rejections, check_queue::check_queue,
+    check_quota::check_quota,
+};
 use clap::Parser;
 use reqwest::header::{HeaderMap, HeaderValue};
 
@@ -42,6 +45,23 @@ struct Args {
     queue: bool,
 
     #[clap(
+        short = 'p',
+        long,
+        value_parser,
+        help = "Check postfix rejections for SSL requirements"
+    )]
+    postfix_rejections: bool,
+
+    #[clap(
+        short = 'l',
+        long,
+        value_parser,
+        default_value_t = 1000,
+        help = "Number of messages to retrieve from logs for checking. You should set this to a number where there are less logs than the specified number are emitted in the period between runs of this program."
+    )]
+    logs_to_retrieve: usize,
+
+    #[clap(
         value_parser,
         default_value = "https://localhost",
         help = "URL running Mailcow API"
@@ -79,6 +99,14 @@ async fn main() -> ExitCode {
 
     if args.all || args.quotas {
         if let Err(e) = check_quota(args.quota_threshold, &args.base_url, &client).await {
+            errors.push(e);
+        }
+    }
+
+    if args.all || args.postfix_rejections {
+        if let Err(e) =
+            check_postfix_rejections(&args.base_url, &args.logs_to_retrieve, &client).await
+        {
             errors.push(e);
         }
     }

@@ -11,9 +11,7 @@ pub async fn check_queue(base_url: &String, client: &Client) -> Result<(), Error
     let text = call(&url, client).await?;
     let queue_items: Vec<QueueItem> = serde_json::from_str(&text)?;
 
-    check_queue_items(queue_items)?;
-
-    Ok(())
+    check_queue_items(queue_items)
 }
 
 fn check_queue_items(queue_items: Vec<QueueItem>) -> Result<(), Error> {
