@@ -67,6 +67,9 @@ struct Args {
         help = "URL running Mailcow API"
     )]
     base_url: String,
+
+    #[clap(short = 'v', long, value_parser, help = "Enable verbose output")]
+    verbose: bool,
 }
 
 #[tokio::main]
@@ -104,8 +107,13 @@ async fn main() -> ExitCode {
     }
 
     if args.all || args.postfix_rejections {
-        if let Err(e) =
-            check_postfix_rejections(&args.base_url, &args.logs_to_retrieve, &client).await
+        if let Err(e) = check_postfix_rejections(
+            &args.base_url,
+            &args.logs_to_retrieve,
+            args.verbose,
+            &client,
+        )
+        .await
         {
             errors.push(e);
         }

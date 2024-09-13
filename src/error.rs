@@ -34,7 +34,7 @@ impl From<Vec<Error>> for Error {
         let mut message = String::new();
         for error in errors {
             message.push_str(error.to_string().as_str());
-            message.push_str("\n");
+            message.push('\n');
         }
 
         Self { message }

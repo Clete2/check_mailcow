@@ -15,7 +15,7 @@ pub async fn check_queue(base_url: &String, client: &Client) -> Result<(), Error
 }
 
 fn check_queue_items(queue_items: Vec<QueueItem>) -> Result<(), Error> {
-    if queue_items.len() == 0 {
+    if queue_items.is_empty() {
         return Ok(());
     }
 
@@ -24,7 +24,7 @@ fn check_queue_items(queue_items: Vec<QueueItem>) -> Result<(), Error> {
         message.push_str(&format!("{}\n", queue_item));
     }
 
-    return Err(Error::from(message));
+    Err(Error::from(message))
 }
 
 #[derive(Deserialize)]
@@ -61,7 +61,7 @@ impl Display for QueueItem {
             let recipient_lines = recipient.split("  ");
             for line in recipient_lines {
                 line.split_inclusive("said: ")
-                    .for_each(|final_split_line| write!(f, "├────{}\n", final_split_line).unwrap());
+                    .for_each(|final_split_line| writeln!(f, "├────{}", final_split_line).unwrap());
             }
         }
 
